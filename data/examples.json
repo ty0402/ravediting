@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "id": "speech",
+      "label": "Speech editing",
+      "description": "Examples of instruction-guided edits to speech."
+    },
+    {
+      "id": "visual",
+      "label": "Visual editing",
+      "description": "Examples of instruction-guided changes to visual content."
+    },
+    {
+      "id": "joint",
+      "label": "Joint AV editing",
+      "description": "Examples of coordinated audio and visual edits."
+    }
+  ],
+  "examples": [
+    {
+      "id": "speech-01",
+      "category": "speech",
+      "title": "Example 01",
+      "instruction": "",
+      "source": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      },
+      "target": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      }
+    },
+    {
+      "id": "visual-01",
+      "category": "visual",
+      "title": "Example 02",
+      "instruction": "",
+      "source": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      },
+      "target": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      }
+    },
+    {
+      "id": "joint-01",
+      "category": "joint",
+      "title": "Example 03",
+      "instruction": "",
+      "source": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      },
+      "target": {
+        "src": "",
+        "poster": "",
+        "captions": ""
+      }
+    }
+  ]
+}
