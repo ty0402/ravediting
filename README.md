@@ -2,7 +2,7 @@
 
 Responsive research homepage for **RAVEdit-NFT: Joint Audio-Visual Editing with Role-Aware Cross-Modal Attention and Negative-Aware Fine-Tuning**.
 
-The page contains an overview, method figures, an instruction + source/target MP4 gallery, quantitative comparisons, and a human preference study. Content and figures are taken from the supplied manuscript. Unreleased resources and video samples are clearly marked as coming soon.
+The page follows the author's MMEditing and Foley-Omni project-page style: a centered paper title and authors, dark resource buttons, an abstract, a method figure, and simple Instruction / Source / Target MP4 tables. Content and figures are taken from the supplied manuscript. Video slots are empty until samples are added.
 
 ## 本地预览
 
@@ -55,18 +55,20 @@ static/videos/speech-01/
 
 ## GitHub Pages
 
-合并主页 PR 后，在仓库 **Settings → Pages** 选择 **Deploy from a branch → main → /(root)**。站点预期地址为 <https://ty0402.github.io/ravediting/>；需启用 Pages 且部署完成后才能访问。
+主页直接维护在 `main` 分支。在仓库 **Settings → Pages** 选择 **Deploy from a branch → main → /(root)**。站点预期地址为 <https://ty0402.github.io/ravediting/>；需启用 Pages 且部署完成后才能访问。
 
-所有资源使用相对路径，可部署到仓库子路径。`.nojekyll` 允许直接发布静态文件。本 PR 不会自动合并，也不修改仓库的 Pages 设置。
+所有资源使用相对路径，可部署到仓库子路径。`.nojekyll` 允许直接发布静态文件。更新代码后推送到 `main`。Pages 首次发布需启用上述设置。
 
 ## 内容维护
 
-- `index.html`：论文标题、作者、摘要、方法说明和结果表。
-- `static/style.css`：响应式布局、配色及移动端适配。
-- `static/app.js`：JSON 读取、筛选、播放器、空状态和加载失败处理。
+- `index.html`：论文标题、作者、摘要、方法说明和演示入口。
+- `static/css/index.css`：直接复用 Foley-Omni 的字体、颜色、按钮和页面基础样式。
+- `static/css/bulma.min.css`：与原站一致的 Bulma 基础样式。
+- `static/style.css`：作者信息和 MMEditing 三列表格的移动端适配。
+- `static/app.js`：JSON 读取、类别锚点、三列表格、播放器和空状态。
 - `data/examples.json`：编辑演示的统一数据入口。
 - `static/images/`：从稿件原图等比缩放并压缩的 WebP 插图。
 
 方法图来源：`RoleAVEdit_editable_v25_01.png`；定性对比来源：`RoleAVEdit_two_rows_editable_01.png`；人类偏好图来源：`av-study-fixedcanvas-editable_01.png`。结果以最新 `Template.tex` 为准。未使用旧的人类偏好图，也未将模板 PDF 当作正式论文发布。没有填入未经确认的 arXiv、会议信息、模型链接或 BibTeX。
 
-视觉结构参考作者的 [MMEditing 主页](https://ty0402.github.io/MMEditing/)，本站以独立 HTML/CSS/JS 实现，不依赖外部字体、脚本 CDN 或前端框架。
+页面直接复用作者的 [Foley-Omni](https://ty0402.github.io/Foley-omni-Web/) 基础样式，并采用 [MMEditing](https://ty0402.github.io/MMEditing/) 的编辑对照表布局。两站同款 Inter 字体通过 Google Fonts 加载，Bulma 样式保存在本地。Bulma 采用 MIT 许可（版权声明见 CSS 文件开头）。MMEditing 原模板来源为 [Academic Project Page Template](https://github.com/eliahuhorwitz/Academic-project-page-template) / [Nerfies](https://nerfies.github.io/)，其页面代码采用 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)；相关表格样式沿用该署名和许可。

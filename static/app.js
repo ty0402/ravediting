@@ -2,14 +2,10 @@
   "use strict";
 
   function startGallery() {
-    const filters = document.querySelector("#demo-filters");
+    const navigation = document.querySelector("#demo-navigation");
     const gallery = document.querySelector("#demo-gallery");
     const status = document.querySelector("#demo-status");
-    if (!filters || !gallery || !status) return;
-
-    let examples = [];
-    let categories = new Map();
-    let activeFilter = "all";
+    if (!navigation || !gallery || !status) return;
 
     function element(tag, className, text) {
       const node = document.createElement(tag);
@@ -37,50 +33,31 @@
     }
 
     function makePlaceholder(isTarget, unavailable = false) {
-      const title = isTarget ? "Edited video" : "Source video";
+      const title = isTarget ? "Target video" : "Source video";
       const placeholder = element("div", "media-placeholder");
       placeholder.setAttribute("role", "img");
       placeholder.setAttribute(
         "aria-label",
-        `${title}. ${unavailable ? "Video unavailable. " : ""}Sample coming soon.`
+        `${title}. ${unavailable ? "Video unavailable." : "Coming soon."}`
       );
-      const svgNS = "http://www.w3.org/2000/svg";
-      const icon = document.createElementNS(svgNS, "svg");
-      icon.setAttribute("viewBox", "0 0 40 40");
-      icon.setAttribute("width", "40");
-      icon.setAttribute("height", "40");
-      icon.setAttribute("fill", "none");
-      icon.setAttribute("aria-hidden", "true");
-      const frame = document.createElementNS(svgNS, "rect");
-      frame.setAttribute("x", "5");
-      frame.setAttribute("y", "8");
-      frame.setAttribute("width", "30");
-      frame.setAttribute("height", "24");
-      frame.setAttribute("rx", "6");
-      frame.setAttribute("stroke", "currentColor");
-      frame.setAttribute("stroke-width", "1.5");
-      const play = document.createElementNS(svgNS, "path");
-      play.setAttribute("d", "M17 15.5 25 20l-8 4.5v-9Z");
-      play.setAttribute("fill", "currentColor");
-      icon.append(frame, play);
       placeholder.append(
-        icon,
         element("span", "placeholder-title", title),
-        element("span", "placeholder-note", unavailable ? "Video unavailable" : "Sample coming soon")
+        element("span", "placeholder-note", unavailable ? "Video unavailable" : "Coming soon")
       );
       return placeholder;
     }
 
-    function makeVideoColumn(media, example, isTarget) {
+    function makeMediaCell(media, example, isTarget) {
       const label = isTarget ? "Target" : "Source";
-      const column = element("div", `video-column${isTarget ? " is-target" : ""}`);
+      const cell = element("td", "media-cell");
+      cell.dataset.label = label;
       const surface = element("div", "video-surface");
       const src = mediaURL(media.src);
-      column.append(element("div", "video-label", label), surface);
+      cell.append(surface);
 
       if (!src) {
         surface.append(makePlaceholder(isTarget));
-        return column;
+        return cell;
       }
 
       const video = document.createElement("video");
@@ -112,63 +89,64 @@
       }, { once: true });
       video.src = src;
       surface.append(video);
-      return column;
+      return cell;
     }
 
-    function makeCard(example) {
-      const category = categories.get(example.category);
-      const card = element("article", "demo-card");
-      const heading = element("div", "demo-card-heading");
-      heading.append(
-        element("span", "category-label", category.label),
-        element("h3", "", example.title)
-      );
-      const instruction = element("div", "instruction-line");
-      instruction.append(
-        element("span", "instruction-label", "Instruction"),
-        element("p", "instruction-text", example.instruction.trim() || "Instruction to be added")
-      );
-      const pair = element("div", "video-pair");
-      pair.append(
-        makeVideoColumn(example.source, example, false),
-        makeVideoColumn(example.target, example, true)
-      );
-      card.append(heading, instruction, pair);
-      return card;
-    }
-
-    function renderExamples() {
-      gallery.querySelectorAll("video").forEach((video) => video.pause());
-      const visible = examples.filter((example) => activeFilter === "all" || example.category === activeFilter);
-      const cards = document.createDocumentFragment();
-      visible.forEach((example) => cards.append(makeCard(example)));
-      if (!visible.length) cards.append(element("p", "gallery-empty", "Examples are coming soon."));
-      gallery.replaceChildren(cards);
-      filters.querySelectorAll("button").forEach((button) => {
-        const selected = button.dataset.filter === activeFilter;
-        button.setAttribute("aria-pressed", String(selected));
-        button.classList.toggle("is-active", selected);
+    function makeGroup(category, examples, index) {
+      const section = element("section", "sample-group");
+      section.id = category.id;
+      const heading = element("h3", "", `${index + 1}. ${category.label}`);
+      const table = element("table", "samples-table");
+      const caption = element("caption", "sr-only", `${category.label}: source and edited video comparison`);
+      const columns = document.createElement("colgroup");
+      ["22%", "39%", "39%"].forEach((width) => {
+        const column = document.createElement("col");
+        column.style.width = width;
+        columns.append(column);
       });
-      const label = activeFilter === "all" ? "All edits" : categories.get(activeFilter).label;
-      status.textContent = `${label}: ${visible.length} ${visible.length === 1 ? "example" : "examples"}.`;
+      const head = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      ["Instruction", "Source", "Target (RAVEdit-NFT)"].forEach((label) => {
+        const header = element("th", "", label);
+        header.scope = "col";
+        headerRow.append(header);
+      });
+      head.append(headerRow);
+      const body = document.createElement("tbody");
+      examples.forEach((example) => {
+        const row = document.createElement("tr");
+        row.append(
+          element("td", "instruction-cell", example.instruction.trim() || "Instruction to be added"),
+          makeMediaCell(example.source, example, false),
+          makeMediaCell(example.target, example, true)
+        );
+        body.append(row);
+      });
+      if (!examples.length) {
+        const row = document.createElement("tr");
+        const cell = element("td", "gallery-empty", "Video samples coming soon.");
+        cell.colSpan = 3;
+        row.append(cell);
+        body.append(row);
+      }
+      table.append(caption, columns, head, body);
+      section.append(heading, table);
+      return section;
     }
 
-    function renderFilters() {
-      const fragment = document.createDocumentFragment();
-      [{ id: "all", label: "All edits" }, ...categories.values()].forEach((category) => {
-        const button = element("button", "filter-button", category.label);
-        button.type = "button";
-        button.dataset.filter = category.id;
-        button.setAttribute("aria-controls", "demo-gallery");
-        button.setAttribute("aria-pressed", "false");
-        button.addEventListener("click", () => {
-          if (activeFilter === category.id) return;
-          activeFilter = category.id;
-          renderExamples();
-        });
-        fragment.append(button);
+    function renderExamples(data) {
+      const links = document.createDocumentFragment();
+      const groups = document.createDocumentFragment();
+      data.categories.forEach((category, index) => {
+        const link = element("a", "sample-link", category.label);
+        link.href = `#${category.id}`;
+        links.append(link);
+        groups.append(makeGroup(category, data.examples.filter((example) => example.category === category.id), index));
       });
-      filters.replaceChildren(fragment);
+      navigation.replaceChildren(links);
+      gallery.replaceChildren(groups);
+      const hasMedia = data.examples.some((example) => mediaURL(example.source.src) || mediaURL(example.target.src));
+      status.textContent = hasMedia ? "" : "Video samples coming soon.";
     }
 
     function validateData(data) {
@@ -179,7 +157,7 @@
       }
       const categoryIds = new Set();
       for (const category of data.categories) {
-        if (!category || !nonempty(category.id) || category.id === "all" || categoryIds.has(category.id)
+        if (!category || typeof category.id !== "string" || !/^[a-z][a-z0-9-]*$/.test(category.id) || categoryIds.has(category.id)
           || !nonempty(category.label) || typeof category.description !== "string") {
           throw new Error("Invalid example category.");
         }
@@ -204,14 +182,9 @@
         return response.json();
       })
       .then(validateData)
-      .then((data) => {
-        examples = data.examples;
-        categories = new Map(data.categories.map((category) => [category.id, category]));
-        renderFilters();
-        renderExamples();
-      })
+      .then(renderExamples)
       .catch(() => {
-        filters.replaceChildren();
+        navigation.replaceChildren();
         gallery.replaceChildren(element("p", "gallery-empty", "Examples are temporarily unavailable. Please try again later."));
         status.textContent = "Examples could not be loaded.";
       });
