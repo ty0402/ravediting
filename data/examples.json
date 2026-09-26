@@ -1,68 +1,240 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "categories": [
     {
       "id": "speech",
       "label": "Speech editing",
-      "description": "Examples of instruction-guided edits to speech."
+      "description": "Change spoken dialogue while preserving the scene."
     },
     {
-      "id": "visual",
-      "label": "Visual editing",
-      "description": "Examples of instruction-guided changes to visual content."
+      "id": "subject-editing",
+      "label": "Subject editing",
+      "description": "Change the subject’s appearance while preserving the scene."
     },
     {
-      "id": "joint",
-      "label": "Joint AV editing",
-      "description": "Examples of coordinated audio and visual edits."
+      "id": "background-editing",
+      "label": "Background editing",
+      "description": "Change the setting while preserving the foreground subject."
+    },
+    {
+      "id": "subject-addition",
+      "label": "Subject addition",
+      "description": "Add a subject to the source scene."
+    },
+    {
+      "id": "subject-removal",
+      "label": "Subject removal",
+      "description": "Remove a subject while retaining the background."
     }
   ],
   "examples": [
     {
       "id": "speech-01",
       "category": "speech",
-      "title": "Example 01",
-      "instruction": "",
+      "title": "A jellyfish bloom",
+      "instruction": "Replace the character's dialogue with: \"A massive jellyfish bloom has completely overtaken the coastal waters now.\" while maintaining all visual elements and background sounds identical to the original scene.",
       "source": {
-        "src": "",
-        "poster": "",
+        "src": "static/videos/speech-01/source.mp4",
+        "poster": "static/videos/speech-01/source.jpg",
         "captions": ""
       },
-      "target": {
-        "src": "",
-        "poster": "",
+      "ins": {
+        "src": "static/videos/speech-01/ins.mp4",
+        "poster": "static/videos/speech-01/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/speech-01/ours.mp4",
+        "poster": "static/videos/speech-01/ours.jpg",
         "captions": ""
       }
     },
     {
-      "id": "visual-01",
-      "category": "visual",
-      "title": "Example 02",
-      "instruction": "",
+      "id": "speech-02",
+      "category": "speech",
+      "title": "A downtown mural",
+      "instruction": "Adjust the character's dialogue to: \"The city's top muralist just finished a stunning new downtown mural.\" while maintaining all visual elements and background sounds identical to the original scene.",
       "source": {
-        "src": "",
-        "poster": "",
+        "src": "static/videos/speech-02/source.mp4",
+        "poster": "static/videos/speech-02/source.jpg",
         "captions": ""
       },
-      "target": {
-        "src": "",
-        "poster": "",
+      "ins": {
+        "src": "static/videos/speech-02/ins.mp4",
+        "poster": "static/videos/speech-02/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/speech-02/ours.mp4",
+        "poster": "static/videos/speech-02/ours.jpg",
         "captions": ""
       }
     },
     {
-      "id": "joint-01",
-      "category": "joint",
-      "title": "Example 03",
-      "instruction": "",
+      "id": "subject-editing-01",
+      "category": "subject-editing",
+      "title": "Bartender attire",
+      "instruction": "Replace the individual's attire with standard bartender clothing including a white shirt, black vest, and dark apron while preserving all gestures, expressions, and scene details.",
       "source": {
-        "src": "",
-        "poster": "",
+        "src": "static/videos/subject-editing-01/source.mp4",
+        "poster": "static/videos/subject-editing-01/source.jpg",
         "captions": ""
       },
-      "target": {
-        "src": "",
-        "poster": "",
+      "ins": {
+        "src": "static/videos/subject-editing-01/ins.mp4",
+        "poster": "static/videos/subject-editing-01/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-editing-01/ours.mp4",
+        "poster": "static/videos/subject-editing-01/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "subject-editing-02",
+      "category": "subject-editing",
+      "title": "Racing suit",
+      "instruction": "Replace the subject's dark brown T-shirt with a race car driver's branded fire-resistant racing suit while preserving all other visual elements like background, lighting, and physical posture.",
+      "source": {
+        "src": "static/videos/subject-editing-02/source.mp4",
+        "poster": "static/videos/subject-editing-02/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/subject-editing-02/ins.mp4",
+        "poster": "static/videos/subject-editing-02/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-editing-02/ours.mp4",
+        "poster": "static/videos/subject-editing-02/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "background-editing-01",
+      "category": "background-editing",
+      "title": "Desert ranch",
+      "instruction": "Replace the background with a sunny desert ranch setting, while keeping the person, clothing, headwear, expression, and camera trajectory in the foreground consistent.",
+      "source": {
+        "src": "static/videos/background-editing-01/source.mp4",
+        "poster": "static/videos/background-editing-01/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/background-editing-01/ins.mp4",
+        "poster": "static/videos/background-editing-01/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/background-editing-01/ours.mp4",
+        "poster": "static/videos/background-editing-01/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "background-editing-02",
+      "category": "background-editing",
+      "title": "Art-filled park",
+      "instruction": "Replace the background with an upscale, art-filled park, with snow-capped mountains in the distance, while keeping the person in the foreground exactly the same in appearance, clothing, tie, and serious expression.",
+      "source": {
+        "src": "static/videos/background-editing-02/source.mp4",
+        "poster": "static/videos/background-editing-02/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/background-editing-02/ins.mp4",
+        "poster": "static/videos/background-editing-02/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/background-editing-02/ours.mp4",
+        "poster": "static/videos/background-editing-02/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "subject-addition-01",
+      "category": "subject-addition",
+      "title": "A futuristic interior",
+      "instruction": "Insert a person with blue hair, facial markings, and a black leather jacket into the futuristic interior background while maintaining the original camera movement and lighting.",
+      "source": {
+        "src": "static/videos/subject-addition-01/source.mp4",
+        "poster": "static/videos/subject-addition-01/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/subject-addition-01/ins.mp4",
+        "poster": "static/videos/subject-addition-01/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-addition-01/ours.mp4",
+        "poster": "static/videos/subject-addition-01/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "subject-addition-02",
+      "category": "subject-addition",
+      "title": "A man on the phone",
+      "instruction": "Place a man with curly hair in a gray sweater over a light blue shirt holding a cell phone into the scene, with audible human speech, while keeping the staircase, flowers, and framed artwork as they are.",
+      "source": {
+        "src": "static/videos/subject-addition-02/source.mp4",
+        "poster": "static/videos/subject-addition-02/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/subject-addition-02/ins.mp4",
+        "poster": "static/videos/subject-addition-02/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-addition-02/ours.mp4",
+        "poster": "static/videos/subject-addition-02/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "subject-removal-01",
+      "category": "subject-removal",
+      "title": "Remove the man",
+      "instruction": "Remove the white-haired man in the center of the screen from the original video, keeping the blurry wooden clothes hanger in the background.",
+      "source": {
+        "src": "static/videos/subject-removal-01/source.mp4",
+        "poster": "static/videos/subject-removal-01/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/subject-removal-01/ins.mp4",
+        "poster": "static/videos/subject-removal-01/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-removal-01/ours.mp4",
+        "poster": "static/videos/subject-removal-01/ours.jpg",
+        "captions": ""
+      }
+    },
+    {
+      "id": "subject-removal-02",
+      "category": "subject-removal",
+      "title": "Remove the woman",
+      "instruction": "Remove the woman with blood on her face in the center of the screen from the original video, keeping the blurry hotel environment in the background.",
+      "source": {
+        "src": "static/videos/subject-removal-02/source.mp4",
+        "poster": "static/videos/subject-removal-02/source.jpg",
+        "captions": ""
+      },
+      "ins": {
+        "src": "static/videos/subject-removal-02/ins.mp4",
+        "poster": "static/videos/subject-removal-02/ins.jpg",
+        "captions": ""
+      },
+      "ours": {
+        "src": "static/videos/subject-removal-02/ours.mp4",
+        "poster": "static/videos/subject-removal-02/ours.jpg",
         "captions": ""
       }
     }

@@ -2,7 +2,7 @@
 
 Responsive research homepage for **RAVEdit-NFT: Joint Audio-Visual Editing with Role-Aware Cross-Modal Attention and Negative-Aware Fine-Tuning**.
 
-The page follows the author's MMEditing and Foley-Omni project-page style: a centered paper title and authors, dark resource buttons, an abstract, a method figure, and simple Instruction / Source / Target MP4 tables. Content and figures are taken from the supplied manuscript. Video slots are empty until samples are added.
+The page follows the author's MMEditing and Foley-Omni project-page style: a centered paper title and authors, dark resource buttons, an abstract, a method figure, and grouped video comparisons with full editing prompts. Content and figures are taken from the supplied manuscript; the samples compare Source, INS, and Ours (NFT).
 
 ## 本地预览
 
@@ -14,44 +14,15 @@ python3 -m http.server 8000
 
 打开 <http://localhost:8000>。请通过 HTTP 预览，直接双击 HTML 会使浏览器阻止读取 JSON。
 
-## 添加视频和 instruction
+## 示例视频与 prompt
 
-每个例子将原始视频与编辑视频放在同一个目录，MP4 中保留音轨：
+`data/examples.json`（`schemaVersion: 2`）统一管理类别、原始编辑指令、Source、INS 和 Ours (NFT) 视频。页面当前包含 5 类、每类 2 组，共 10 组对比：Speech editing、Subject editing、Background editing、Subject addition、Subject removal。
 
-```text
-static/videos/speech-01/
-  source.mp4
-  target.mp4
-  source.webp        # 可选封面
-  target.webp        # 可选封面
-  source.vtt         # 可选英文字幕
-  target.vtt         # 可选英文字幕
-```
+每组先显示完整 prompt，再并排显示三个原生 MP4 播放器。**INS** 对应素材中的 `instruct`（InstructAV2AV），**Ours (NFT)** 对应 `nft25`。视频使用原始音视频流，仅将 MP4 索引移到文件开头方便网页播放；没有重新压缩结果。封面截取各视频 0.5 秒处。
 
-然后修改 `data/examples.json` 中对应条目：
+素材来自用户提供的 `av-study-aliyun-20260919.tar.gz`。按该包清单原顺序，每类取前两个配对完整的例子；这些是定性展示示例，不是随机评估集。包内已有样本属于预先筛选的子集。映射为 Speech Q06/Q07、Subject editing Q01/Q02、Background Q03/Q04、Addition Q12/Q13、Removal Q14/Q15。
 
-```json
-{
-  "id": "speech-01",
-  "category": "speech",
-  "title": "Speech example 01",
-  "instruction": "在这里填写实际的编辑指令",
-  "source": {
-    "src": "static/videos/speech-01/source.mp4",
-    "poster": "",
-    "captions": ""
-  },
-  "target": {
-    "src": "static/videos/speech-01/target.mp4",
-    "poster": "",
-    "captions": ""
-  }
-}
-```
-
-保留 `schemaVersion`、`categories` 和 `examples` 的外层结构。复制一个条目即可新增例子，`id` 应唯一，`category` 应与分组 ID 对应。支持站点相对路径或完整 HTTPS 媒体链接；不要以 `/` 开头，避免绕过 GitHub Pages 的 `/ravediting/` 路径。
-
-`instruction`、`src`、`poster`、`captions` 初始均为空。留空时显示占位，不请求不存在的媒体。上传视频后会使用原生播放器，并自动暂停其他视频，避免声音重叠。推荐浏览器兼容的 H.264/AAC MP4。初版的 Speech / Visual / Joint AV 是演示分组，不是论文中五类 benchmark 的枚举。详见 [视频目录说明](static/videos/README.md)。
+新增样本时，将 MP4 和封面放在 `static/videos/<example-id>/`，复制 JSON 条目并填写 `instruction`、`source`、`ins`、`ours`。路径相对于站点根页面，不以 `/` 开头，以兼容 GitHub Pages 的子目录。具体格式见 [视频维护说明](static/videos/README.md)。
 
 ## GitHub Pages
 
@@ -64,8 +35,8 @@ static/videos/speech-01/
 - `index.html`：论文标题、作者、摘要、方法说明和演示入口。
 - `static/css/index.css`：直接复用 Foley-Omni 的字体、颜色、按钮和页面基础样式。
 - `static/css/bulma.min.css`：与原站一致的 Bulma 基础样式。
-- `static/style.css`：作者信息和 MMEditing 三列表格的移动端适配。
-- `static/app.js`：JSON 读取、类别锚点、三列表格、播放器和空状态。
+- `static/style.css`：作者信息、指令与三视频对比的移动端适配。
+- `static/app.js`：JSON 读取、类别锚点、三视频对比、播放器和空状态。
 - `data/examples.json`：编辑演示的统一数据入口。
 - `static/images/`：从稿件原图等比缩放并压缩的 WebP 插图。
 

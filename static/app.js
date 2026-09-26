@@ -32,8 +32,14 @@
       }
     }
 
-    function makePlaceholder(isTarget, unavailable = false) {
-      const title = isTarget ? "Target video" : "Source video";
+    const mediaColumns = [
+      { key: "source", label: "Source" },
+      { key: "ins", label: "INS" },
+      { key: "ours", label: "Ours (NFT)" }
+    ];
+
+    function makePlaceholder(label, unavailable = false) {
+      const title = `${label} video`;
       const placeholder = element("div", "media-placeholder");
       placeholder.setAttribute("role", "img");
       placeholder.setAttribute(
@@ -47,17 +53,16 @@
       return placeholder;
     }
 
-    function makeMediaCell(media, example, isTarget) {
-      const label = isTarget ? "Target" : "Source";
-      const cell = element("td", "media-cell");
-      cell.dataset.label = label;
+    function makeMediaColumn(media, example, column) {
+      const { key, label } = column;
+      const figure = element("figure", `comparison-media is-${key}`);
       const surface = element("div", "video-surface");
       const src = mediaURL(media.src);
-      cell.append(surface);
+      figure.append(element("figcaption", "media-label", label), surface);
 
       if (!src) {
-        surface.append(makePlaceholder(isTarget));
-        return cell;
+        surface.append(makePlaceholder(label));
+        return figure;
       }
 
       const video = document.createElement("video");
@@ -84,53 +89,39 @@
       });
       video.addEventListener("error", () => {
         video.pause();
-        surface.replaceChildren(makePlaceholder(isTarget, true));
-        status.textContent = `The ${label.toLowerCase()} video for “${example.title}” could not be loaded.`;
+        surface.replaceChildren(makePlaceholder(label, true));
+        status.textContent = `The ${label} video for “${example.title}” could not be loaded.`;
       }, { once: true });
       video.src = src;
       surface.append(video);
-      return cell;
+      return figure;
+    }
+
+    function makeExample(example) {
+      const article = element("article", "sample-example");
+      article.setAttribute("aria-label", example.title);
+      const prompt = element("p", "sample-prompt");
+      prompt.append(
+        element("strong", "prompt-label", "Instruction: "),
+        element("span", "prompt-text", example.instruction.trim() || "Instruction to be added")
+      );
+      const comparison = element("div", "sample-comparison");
+      mediaColumns.forEach((column) => {
+        comparison.append(makeMediaColumn(example[column.key], example, column));
+      });
+      article.append(prompt, comparison);
+      return article;
     }
 
     function makeGroup(category, examples, index) {
       const section = element("section", "sample-group");
       section.id = category.id;
       const heading = element("h3", "", `${index + 1}. ${category.label}`);
-      const table = element("table", "samples-table");
-      const caption = element("caption", "sr-only", `${category.label}: source and edited video comparison`);
-      const columns = document.createElement("colgroup");
-      ["22%", "39%", "39%"].forEach((width) => {
-        const column = document.createElement("col");
-        column.style.width = width;
-        columns.append(column);
-      });
-      const head = document.createElement("thead");
-      const headerRow = document.createElement("tr");
-      ["Instruction", "Source", "Target (RAVEdit-NFT)"].forEach((label) => {
-        const header = element("th", "", label);
-        header.scope = "col";
-        headerRow.append(header);
-      });
-      head.append(headerRow);
-      const body = document.createElement("tbody");
-      examples.forEach((example) => {
-        const row = document.createElement("tr");
-        row.append(
-          element("td", "instruction-cell", example.instruction.trim() || "Instruction to be added"),
-          makeMediaCell(example.source, example, false),
-          makeMediaCell(example.target, example, true)
-        );
-        body.append(row);
-      });
+      section.append(heading);
+      examples.forEach((example) => section.append(makeExample(example)));
       if (!examples.length) {
-        const row = document.createElement("tr");
-        const cell = element("td", "gallery-empty", "Video samples coming soon.");
-        cell.colSpan = 3;
-        row.append(cell);
-        body.append(row);
+        section.append(element("p", "gallery-empty", "Video samples coming soon."));
       }
-      table.append(caption, columns, head, body);
-      section.append(heading, table);
       return section;
     }
 
@@ -145,19 +136,20 @@
       });
       navigation.replaceChildren(links);
       gallery.replaceChildren(groups);
-      const hasMedia = data.examples.some((example) => mediaURL(example.source.src) || mediaURL(example.target.src));
+      const hasMedia = data.examples.some((example) => mediaColumns.some((column) => mediaURL(example[column.key].src)));
       status.textContent = hasMedia ? "" : "Video samples coming soon.";
     }
 
     function validateData(data) {
       const nonempty = (value) => typeof value === "string" && value.trim().length > 0;
-      const mediaObject = (value) => value && ["src", "poster", "captions"].every((key) => typeof value[key] === "string");
-      if (!data || data.schemaVersion !== 1 || !Array.isArray(data.categories) || !Array.isArray(data.examples)) {
+      const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+      const mediaObject = (value) => object(value) && ["src", "poster", "captions"].every((key) => typeof value[key] === "string");
+      if (!object(data) || data.schemaVersion !== 2 || !Array.isArray(data.categories) || !Array.isArray(data.examples)) {
         throw new Error("Unsupported examples data.");
       }
       const categoryIds = new Set();
       for (const category of data.categories) {
-        if (!category || typeof category.id !== "string" || !/^[a-z][a-z0-9-]*$/.test(category.id) || categoryIds.has(category.id)
+        if (!object(category) || typeof category.id !== "string" || !/^[a-z][a-z0-9-]*$/.test(category.id) || categoryIds.has(category.id)
           || !nonempty(category.label) || typeof category.description !== "string") {
           throw new Error("Invalid example category.");
         }
@@ -165,9 +157,9 @@
       }
       const exampleIds = new Set();
       for (const example of data.examples) {
-        if (!example || !nonempty(example.id) || exampleIds.has(example.id) || !categoryIds.has(example.category)
+        if (!object(example) || !nonempty(example.id) || exampleIds.has(example.id) || !categoryIds.has(example.category)
           || !nonempty(example.title) || typeof example.instruction !== "string"
-          || !mediaObject(example.source) || !mediaObject(example.target)) {
+          || !mediaColumns.every((column) => mediaObject(example[column.key]))) {
           throw new Error("Invalid example data.");
         }
         exampleIds.add(example.id);
@@ -176,7 +168,7 @@
     }
 
     status.textContent = "Loading examples…";
-    fetch(new URL("data/examples.json", document.baseURI))
+    fetch(new URL("data/examples.json?v=20260926-comparison", document.baseURI))
       .then((response) => {
         if (!response.ok) throw new Error("Examples could not be loaded.");
         return response.json();
